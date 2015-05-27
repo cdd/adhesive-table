@@ -1,0 +1,8 @@
+#testTable {
+  width: 300px;
+  /*height: 200px;*/
+}
+#testTable > tbody > tr > th{
+  width: 50px;
+  height: 30px;
+}

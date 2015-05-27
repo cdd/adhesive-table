@@ -11,6 +11,7 @@
     <!-- Load local lib and tests. -->
     <script src="../src/fixedheaderrewrite.js"></script>
     <script src="fixedheaderrewrite_test.js"></script>
+    <link rel="stylesheet" href="testFrameStyle.css" media="screen">
     <!-- Removing access to jQuery and $. But it'll still be available as _$, if
          you REALLY want to mess around with jQuery in the console. REMEMBER WE
          ARE TESTING A PLUGIN HERE, THIS HELPS ENSURE BEST PRACTICES. REALLY. -->
@@ -18,10 +19,147 @@
   </head>
   <body>
     <div id="qunit"></div>
-    <div id="qunit-fixture">
-      <span>lame test markup</span>
-      <span>normal test markup</span>
-      <span>awesome test markup</span>
+        
+    <div id="qunit-fixturee">
+      <table id='testTable'>
+        <thead>
+          <tr>
+            <th> Column 1 </th>
+            <th> Column 2 </th>
+            <th> Column 3 </th>
+            <th> Column 4 </th>
+            <th> Column 5 </th>
+            <th> Column 6 </th>
+            <th> Column 7 </th>
+            <th> Column 8 </th>
+            <th> Column 9 </th>
+            <th> Column 10 </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th> Row 1 Column 1 </th>
+            <th> Row 1 Column 2 </th>
+            <th> Row 1 Column 3 </th>
+            <th> Row 1 Column 4 </th>
+            <th> Row 1 Column 5 </th>
+            <th> Row 1 Column 6 </th>
+            <th> Row 1 Column 7 </th>
+            <th> Row 1 Column 8 </th>
+            <th> Row 1 Column 9 </th>
+            <th> Row 1 Column 10 </th>
+          </tr>
+          <tr>
+            <th> Row 2 Column 1 </th>
+            <th> Row 2 Column 2 </th>
+            <th> Row 2 Column 3 </th>
+            <th> Row 2 Column 4 </th>
+            <th> Row 2 Column 5 </th>
+            <th> Row 2 Column 6 </th>
+            <th> Row 2 Column 7 </th>
+            <th> Row 2 Column 8 </th>
+            <th> Row 2 Column 9 </th>
+            <th> Row 2 Column 10 </th>
+          </tr>
+          <tr>
+            <th> Row 3 Column 1 </th>
+            <th> Row 3 Column 2 </th>
+            <th> Row 3 Column 3 </th>
+            <th> Row 3 Column 4 </th>
+            <th> Row 3 Column 5 </th>
+            <th> Row 3 Column 6 </th>
+            <th> Row 3 Column 7 </th>
+            <th> Row 3 Column 8 </th>
+            <th> Row 3 Column 9 </th>
+            <th> Row 3 Column 10 </th>
+          </tr>
+          <tr>
+            <th> Row 4 Column 1 </th>
+            <th> Row 4 Column 2 </th>
+            <th> Row 4 Column 3 </th>
+            <th> Row 4 Column 4 </th>
+            <th> Row 4 Column 5 </th>
+            <th> Row 4 Column 6 </th>
+            <th> Row 4 Column 7 </th>
+            <th> Row 4 Column 8 </th>
+            <th> Row 4 Column 9 </th>
+            <th> Row 4 Column 10 </th>
+          </tr>   
+          <tr>
+            <th> Row 5 Column 1 </th>
+            <th> Row 5 Column 2 </th>
+            <th> Row 5 Column 3 </th>
+            <th> Row 5 Column 4 </th>
+            <th> Row 5 Column 5 </th>
+            <th> Row 5 Column 6 </th>
+            <th> Row 5 Column 7 </th>
+            <th> Row 5 Column 8 </th>
+            <th> Row 5 Column 9 </th>
+            <th> Row 5 Column 10 </th>
+          </tr> 
+          <tr>
+            <th> Row 6 Column 1 </th>
+            <th> Row 6 Column 2 </th>
+            <th> Row 6 Column 3 </th>
+            <th> Row 6 Column 4 </th>
+            <th> Row 6 Column 5 </th>
+            <th> Row 6 Column 6 </th>
+            <th> Row 6 Column 7 </th>
+            <th> Row 6 Column 8 </th>
+            <th> Row 6 Column 9 </th>
+            <th> Row 6 Column 10 </th>
+          </tr>    
+          <tr>
+            <th> Row 7 Column 1 </th>
+            <th> Row 7 Column 2 </th>
+            <th> Row 7 Column 3 </th>
+            <th> Row 7 Column 4 </th>
+            <th> Row 7 Column 5 </th>
+            <th> Row 7 Column 6 </th>
+            <th> Row 7 Column 7 </th>
+            <th> Row 7 Column 8 </th>
+            <th> Row 7 Column 9 </th>
+            <th> Row 7 Column 10 </th>
+          </tr>
+          <tr>
+            <th> Row 8 Column 1 </th>
+            <th> Row 8 Column 2 </th>
+            <th> Row 8 Column 3 </th>
+            <th> Row 8 Column 4 </th>
+            <th> Row 8 Column 5 </th>
+            <th> Row 8 Column 6 </th>
+            <th> Row 8 Column 7 </th>
+            <th> Row 8 Column 8 </th>
+            <th> Row 8 Column 9 </th>
+            <th> Row 8 Column 10 </th>
+          </tr>  
+          <tr>
+            <th> Row 9 Column 1 </th>
+            <th> Row 9 Column 2 </th>
+            <th> Row 9 Column 3 </th>
+            <th> Row 9 Column 4 </th>
+            <th> Row 9 Column 5 </th>
+            <th> Row 9 Column 6 </th>
+            <th> Row 9 Column 7 </th>
+            <th> Row 9 Column 8 </th>
+            <th> Row 9 Column 9 </th>
+            <th> Row 9 Column 10 </th>
+          </tr>
+          <tr>
+            <th> Row 10 Column 1 </th>
+            <th> Row 10 Column 2 </th>
+            <th> Row 10 Column 3 </th>
+            <th> Row 10 Column 4 </th>
+            <th> Row 10 Column 5 </th>
+            <th> Row 10 Column 6 </th>
+            <th> Row 10 Column 7 </th>
+            <th> Row 10 Column 8 </th>
+            <th> Row 10 Column 9 </th>
+            <th> Row 10 Column 10 </th>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    
   </body>
 </html>
