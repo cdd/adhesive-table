@@ -2,21 +2,25 @@
   describe('Fixed Header Table Rewrite', function(){
     
     after(function(){
-      _$('#mocha-fixture').hide();
+      // _$('#mocha-fixture').hide();
     });
     //http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     function selectorInViewport (selector) {
       var el = document.querySelector(selector);
-      var rect = el.getBoundingClientRect();
-      var a = rect.top >= 0;
-      var b = rect.left >= 0;
-      var c = rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
-      var d = rect.right <= (window.innerWidth || document.documentElement.clientWidth);
-      return a && b && c && d;
+      if(el){    
+        var rect = el.getBoundingClientRect();
+        var a = rect.top >= 0;
+        var b = rect.left >= 0;
+        var c = rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+        var d = rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+        return a && b && c && d;
+      } else {
+        return false;
+      }
     }
     
-    function scrollSelectorIntoView(selector){
-      document.querySelector(selector).scrollIntoView(true);
+    function scrollSelectorIntoView(selector, arg){
+      document.querySelector(selector).scrollIntoView(arg);
     }
       
     it('is a function', function () {
@@ -30,6 +34,9 @@
           _$('#subspan').fixedHeaderRewrite();
       }, Error, 'Invalid table mark-up');
     });
+    
+      // it('throws if given invalid arguments', function(){});
+      // 
     
     it('loads style sheet automatically', function(){
       
@@ -65,7 +72,7 @@
       });
       
       it('header is initially visible', function(done){
-        scrollSelectorIntoView('thead');
+        scrollSelectorIntoView('thead', true);
         setTimeout(function(){
             assert.isTrue(!!selectorInViewport( 'thead'), 'header is initially visible');
             done();
@@ -73,7 +80,7 @@
       });
       
       it( 'header is no longer visible, because we have scrolled away', function(done){        
-        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40)');
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40)', true);
         setTimeout(function(){
           assert.isTrue(!selectorInViewport('thead'));
           done();
@@ -81,7 +88,7 @@
       });
       
       it('header is still not visible by simply scrolling to element one below it', function(done){
-        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1)');
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1)', true);
         setTimeout(function(){
           assert.isTrue(!selectorInViewport('thead'), 'header is still not visible by simply scrolling to element one below it');
           done();
@@ -94,12 +101,12 @@
         _$('#testTable').fixedHeaderRewrite();
       });
       it('header is initially visible', function(){
-        scrollSelectorIntoView('#mocha-fixture > div > div.fht-thead');
+        scrollSelectorIntoView('#mocha-fixture > div > div.fht-thead', true);
         assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header is initially visible');
       });
       
       it('header is still visible after scroll', function(done){
-        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40)'); 
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40)', true); 
         setTimeout(function(){
           assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header still visible');
           done();
@@ -107,18 +114,69 @@
       });
       
       it('header should be still visible', function(done){
-        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1)');
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1)', true);
         setTimeout(function(){
           assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header should be still visible');
           done();
         }, 10); 
       });
     });
+    
+    
+    describe('can be commanded to make the first column sticky', function(){
+      before(function(){
+        _$('#testTable').fixedHeaderRewrite('destroy');
+      });
+      
+      beforeEach(function(){
+        _$('#testTable').fixedHeaderRewrite({fixedColumn: true});
+      });
+      
+      it('should see the cloned column', function(){
+        selectorInViewport('#mocha-fixture > div > div.fht-fixed-column');
+      });
+      
+      // it('which should have the same height as the regular table', function(){
+      //   selectorInViewport('#mocha-fixture > div > div.fht-fixed-column').children[1];
+      // });
+      
+      it('should still see the sticky column and header after scrolling right', function(done){
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(10)', false); 
+        setTimeout(function(){
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(10)'), 'header still visible');
+          done();
+        }, 10); 
+      });
+      
+      it('should still see the sticky column and header after scrolling back left', function(done){
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(1)', false); 
+        setTimeout(function(){
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(1)'), 'header still visible');
+          done();
+        }, 10); 
+      });
+      
+      it('should still see the sticky column and header to the far right corner', function(done){
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40) > td:nth-child(10)', false); 
+        setTimeout(function(){
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(40) > td'), 'sticky column still visible');
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(10)'), 'header still visible');
+          done();
+        }, 10); 
+      });
+
+      it('should still see the sticky column and header after scrolling back left', function(done){
+        scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(1)', false); 
+        setTimeout(function(){
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(1)'), 'header still visible');
+          done();
+        }, 10); 
+      });
+      
+    });
   });    
-  // it('throws if given invalid arguments', function(){});
-  // 
-  // it('can be commanded to make the first column sticky', function(){
-  //   _$('#testTable').fixedHeaderRewrite({stickyColumn: true});
-  // });
   
 }());
