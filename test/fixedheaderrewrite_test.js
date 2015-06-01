@@ -2,7 +2,7 @@
   describe('Fixed Header Table Rewrite', function(){
     
     after(function(){
-      _$('#mocha-fixture').hide();
+      // _$('#mocha-fixture').hide();
     });
     //http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     function selectorInViewport (selector) {

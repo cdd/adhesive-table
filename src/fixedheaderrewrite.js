@@ -4,8 +4,8 @@
 (function ($) {
   $.fn.fixedHeaderRewrite = function (method, options) {
     // forcibly append the formatting css to the document
-    if($('head > link[href="./src/fixedHeaderRewrite.css"]').length === 0){
-      $('head').prepend('<link rel="stylesheet" href="./src/fixedHeaderRewrite.css" type="text/css" />');
+    if($('head > link[href="../src/fixedHeaderRewrite.css"]').length === 0){
+      $('head').prepend('<link rel="stylesheet" href="../src/fixedHeaderRewrite.css" type="text/css" />');
     }
     // Override default options with passed-in options.
     options = $.extend({}, $.fn.fixedHeaderRewrite.options, options);
@@ -257,19 +257,15 @@
         // set width of fixed column wrapper
         $fixedColumn.css({ 'height': 0, 'width': fixedColumnWidth });
 
-        // bind mousewheel events
+        // bind wheel events
         var maxTop = $fixedColumn.find('.fht-tbody .fht-table').height() - $fixedColumn.find('.fht-tbody').height();
-        $fixedColumn.find('.fht-tbody .fht-table').bind('mousewheel', function(event, delta, deltaX, deltaY) {
-          if (deltaY === 0) {
-            return;
-          }
+        $fixedColumn.find('.fht-tbody .fht-table').bind('wheel', function(event) {
+          var deltaY = -1 * event.originalEvent.deltaY ;/// (20 * 120);// TODO browser stuff
+          if (deltaY === 0) { return; }
+          
           var top = parseInt($(this).css('marginTop'), 10) + (deltaY > 0 ? 120 : -120);
-          if (top > 0) {
-            top = 0;
-          }
-          if (top < -maxTop) {
-            top = -maxTop;
-          }
+          top = (top > 0 ? 0 : ( top < -maxTop ? -maxTop : top) );
+          
           $(this).css('marginTop', top);
           $fixedBody.find('.fht-tbody').scrollTop(-top).scroll();
           return false;
