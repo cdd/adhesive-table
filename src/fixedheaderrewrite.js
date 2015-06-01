@@ -8,12 +8,12 @@
 (function ($) {
   $.fn.fixedHeaderRewrite = function (method, options) {
     // forcibly append the formatting css to the document
-    $('head').append('<link rel="stylesheet" href="../src/fixedHeaderRewrite.css" type="text/css" />');
+    if($('head > link[href="../src/fixedHeaderRewrite.css"]').length === 0){
+      $('head').prepend('<link rel="stylesheet" href="../src/fixedHeaderRewrite.css" type="text/css" />');
+    }
     // Override default options with passed-in options.
     options = $.extend({}, $.fn.fixedHeaderRewrite.options, options);
-    
-    
-    
+        
     // plugin's default options
     var defaults = {
       width:          '100%',
@@ -101,11 +101,8 @@
             $fixedBody    = $wrapper.find('.fht-fixed-body');
           }
 
-          $wrapper.css({
-            width: settings.width,
-            height: settings.height
-          })
-            .addClass(settings.themeClassName);
+          $wrapper.css({ width: settings.width, height: settings.height })
+                  .addClass(settings.themeClassName);
 
           if (!$self.hasClass('fht-table-init')) {
             $self.wrap('<div class="fht-tbody"></div>');
@@ -684,16 +681,14 @@
         }
 
       };
-      //these seem reall unnessecary
-      // // if a method as the given argument exists
-      if (typeof method === 'object' || !method) {
-        // call the initialization method
-        return methods.init.apply(this, arguments);
-      } else {      
-        // trigger an error
-        $.error('Method "' +  method + '" does not exist in fixedHeaderTable plugin!');
       
-      }
+    if (methods[method]) {
+      return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+    } else if (typeof method === 'object' || !method) {
+      return methods.init.apply(this, arguments);
+    } else {
+      $.error('Method "' +  method + '" does not exist in fixedHeaderTable plugin!');
+    }
     
   };
 

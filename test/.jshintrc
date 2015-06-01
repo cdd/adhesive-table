@@ -12,7 +12,10 @@
   "eqnull": true,
   "browser": true,
   "node": true,
+  "mocha": true,
   "predef": [
+    "_$",
+    "assert",
     "jQuery",
     "QUnit",
     "module",
@@ -28,6 +31,7 @@
     "notDeepEqual",
     "strictEqual",
     "notStrictEqual",
-    "throws"
+    "throws",
+    "mocha"
   ]
 }

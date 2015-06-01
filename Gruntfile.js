@@ -37,6 +37,13 @@ module.exports = function (grunt) {
         dest: 'dist/jquery.<%= pkg.name %>.min.js'
       }
     },
+    mocha: {
+      test: {
+        options: {
+          urls: [ 'http://localhost:9000/test/<%= pkg.name %>.html' ],
+        },
+      },
+    },
     qunit: {
       all: {
         options: {
@@ -64,7 +71,7 @@ module.exports = function (grunt) {
         options: {
           jshintrc: 'test/.jshintrc'
         },
-        src: ['test/**/*.js']
+        src: ['test/**/*.html']
       }
     },
     watch: {
@@ -74,11 +81,11 @@ module.exports = function (grunt) {
       },
       src: {
         files: '<%= jshint.src.src %>',
-        tasks: ['jshint:src', 'qunit']
+        tasks: ['jshint:src', 'mocha']
       },
       test: {
         files: '<%= jshint.test.src %>',
-        tasks: ['jshint:test', 'qunit']
+        tasks: ['jshint:test', 'mocha']
       }
     },
     connect: {
@@ -92,11 +99,7 @@ module.exports = function (grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean', 'concat', 'uglify']);
-  grunt.registerTask('server', function () {
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve']);
-  });
+  grunt.registerTask('default', ['jshint', 'connect', 'mocha', 'clean', 'concat', 'uglify']);
   grunt.registerTask('serve', ['connect', 'watch']);
-  grunt.registerTask('test', ['jshint', 'connect', 'qunit']);
+  grunt.registerTask('test', ['connect', 'mocha']);
 };
