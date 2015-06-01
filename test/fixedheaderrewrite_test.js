@@ -2,7 +2,7 @@
   describe('Fixed Header Table Rewrite', function(){
     
     after(function(){
-      _$('.testStuff').hide();
+      _$('#mocha-fixture').hide();
     });
     //http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     function selectorInViewport (selector) {
@@ -43,7 +43,7 @@
     
     it('when pointed at a table, many things are wrapped', function(){
       _$('#testTable').fixedHeaderRewrite();
-      var tableWrapper = document.getElementsByClassName('testStuff')[0].children[0];
+      var tableWrapper = document.getElementById('mocha-fixture').children[0];
       assert.equal(tableWrapper.getAttribute('class'), 'fht-table-wrapper fht-default', 'table wrapper should have appropriate classes appended');
     
       var headWrapper = tableWrapper.children[0];
@@ -59,9 +59,6 @@
       
     });
     
-    // text('height and width arguments', function(){
-    //   
-    // });
     describe('table is not sticky if not run', function(){
       before(function(){
         _$('#testTable').fixedHeaderRewrite('destroy');
@@ -72,7 +69,7 @@
         setTimeout(function(){
             assert.isTrue(!!selectorInViewport( 'thead'), 'header is initially visible');
             done();
-          }, 10);
+          }, 300);
       });
       
       it( 'header is no longer visible, because we have scrolled away', function(done){        
@@ -97,14 +94,14 @@
         _$('#testTable').fixedHeaderRewrite();
       });
       it('header is initially visible', function(){
-        scrollSelectorIntoView('#qunit-fixturee > div > div.fht-thead');
-        assert.isTrue(selectorInViewport('#qunit-fixturee > div > div.fht-thead'), 'header is initially visible');
+        scrollSelectorIntoView('#mocha-fixture > div > div.fht-thead');
+        assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header is initially visible');
       });
       
       it('header is still visible after scroll', function(done){
         scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40)'); 
         setTimeout(function(){
-          assert.isTrue(selectorInViewport('#qunit-fixturee > div > div.fht-thead'), 'header still visible');
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header still visible');
           done();
         }, 10); 
       });
@@ -112,14 +109,10 @@
       it('header should be still visible', function(done){
         scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1)');
         setTimeout(function(){
-          assert.isTrue(selectorInViewport('#qunit-fixturee > div > div.fht-thead'), 'header should be still visible');
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header should be still visible');
           done();
         }, 10); 
       });
-      
-      // debugger;
-      // 
-      // _$('#testTable').fixedHeaderRewrite('destroy');
     });
   });    
   // it('throws if given invalid arguments', function(){});

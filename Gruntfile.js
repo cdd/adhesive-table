@@ -1,7 +1,9 @@
 'use strict';
+/* jshint camelcase: false */
 module.exports = function (grunt) {
   // Load all grunt tasks
   require('load-grunt-tasks')(grunt);
+  grunt.loadNpmTasks('grunt-mocha-phantomjs');
   // Show elapsed time at the end
   require('time-grunt')(grunt);
 
@@ -44,12 +46,8 @@ module.exports = function (grunt) {
         },
       },
     },
-    qunit: {
-      all: {
-        options: {
-          urls: ['http://localhost:9000/test/<%= pkg.name %>.html']
-        }
-      }
+    mocha_phantomjs: {
+      all: ['test/*.html']
     },
     jshint: {
       options: {
@@ -70,8 +68,7 @@ module.exports = function (grunt) {
       test: {
         options: {
           jshintrc: 'test/.jshintrc'
-        },
-        src: ['test/**/*.html']
+        }
       }
     },
     watch: {
@@ -99,7 +96,7 @@ module.exports = function (grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'connect', 'mocha', 'clean', 'concat', 'uglify']);
+  grunt.registerTask('default', ['jshint', 'connect', 'mocha_phantomjs', 'clean', 'concat', 'uglify']);
   grunt.registerTask('serve', ['connect', 'watch']);
-  grunt.registerTask('test', ['connect', 'mocha']);
+  grunt.registerTask('test', ['mocha_phantomjs']);
 };

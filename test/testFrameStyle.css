@@ -8,6 +8,6 @@
   height: 50px;
 }
 /*make sure to include a note in the documentation about the placement of sizing selectors*/
-.testStuff {
+#mocha-fixture {
   height: 300px;
 }
