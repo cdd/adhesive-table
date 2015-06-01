@@ -16,8 +16,6 @@
         
     // plugin's default options
     var defaults = {
-      width:          '100%',
-      height:         '100%',
       themeClass:     'fht-default',
       borderCollapse:  true,
       fixedColumns:    0, // fixed first columns
@@ -71,11 +69,7 @@
           settings.scrollbarOffset = helpers._getScrollbarWidth();
           settings.themeClassName = settings.themeClass;
 
-          if (settings.width.search('%') > -1) {
-              widthMinusScrollbar = $self.parent().width() - settings.scrollbarOffset;
-          } else {
-              widthMinusScrollbar = settings.width - settings.scrollbarOffset;
-          }
+          widthMinusScrollbar = $self.parent().width() - settings.scrollbarOffset;
 
           $self.css({
             width: widthMinusScrollbar
@@ -101,7 +95,7 @@
             $fixedBody    = $wrapper.find('.fht-fixed-body');
           }
 
-          $wrapper.css({ width: settings.width, height: settings.height })
+          $wrapper.css({ width: '100%', height: '100%' })
                   .addClass(settings.themeClassName);
 
           if (!$self.hasClass('fht-table-init')) {
@@ -690,10 +684,5 @@
       $.error('Method "' +  method + '" does not exist in fixedHeaderTable plugin!');
     }
     
-  };
-
-  // Default options.
-  $.fn.fixedHeaderRewrite.options = {
-    punctuation: '.'
   };
 }(jQuery));
