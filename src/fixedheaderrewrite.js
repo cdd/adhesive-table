@@ -242,21 +242,27 @@
 
       /* Fix widths of each cell in the first row of obj. */
       _setupClone: function($self, cellArray) {
-        var selector = ($self.find('thead').length) ? 'thead tr:first-child > *' : 'tbody tr:first-child > *',
-            $cell;
+        var selector = ($self.find('thead').length) ? 'thead tr:first-child > *' : 'tbody tr:first-child > *';
 
         $self.find(selector).each(function(index) {
-          $cell = ($(this).find('div.fht-cell').length) ? $(this).find('div.fht-cell') : $('<div class="fht-cell"></div>').appendTo($(this));
+          var $obj = $(this),
+              $cell;
+              
+          if( $obj.find('div.fht-cell').length ){
+            $cell = $(this).find('div.fht-cell');            
+          } else {
+            $cell = $('<div class="fht-cell"></div>').appendTo($obj);            
+          }
           $cell.css({ 'width': parseInt(cellArray[index], 10) });
 
           /* Fixed Header should extend the full width to align with the scrollbar of the body */
-          var a = !$(this).closest('.fht-tbody').length;
-          var b = $(this).is(':last-child');
-          var c = !$(this).closest('.fht-fixed-column').length;
+          var a = !$obj.closest('.fht-tbody').length;
+          var b = $obj.is(':last-child');
+          var c = !$obj.closest('.fht-fixed-column').length;
           if ( a && b  && c) {
-            var widthDifference = ($(this).innerWidth() - $(this).width()) / 2;
+            var widthDifference = ($obj.innerWidth() - $obj.width()) / 2;
             var padding = Math.max(widthDifference, settings.scrollbarOffset);
-            var computedPadding = parseInt($(this).css('padding-right')) + padding + 'px';
+            var computedPadding = parseInt($obj.css('padding-right')) + padding + 'px';
             $(this).css({ 'padding-right': computedPadding });
           }
         });
@@ -309,6 +315,7 @@
     if(action === 'destroy'){
       return methods.destroy.apply(this);
     } else if (typeof action === 'boolean' || typeof action === 'undefined'){
+      methods.destroy.apply(this);
       return methods.init.apply(this, arguments);      
     } else {
       $.error('Input "' +  action + '" is not valid for the fixedHeaderRewrite plugin!');      

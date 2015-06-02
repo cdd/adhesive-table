@@ -32,14 +32,18 @@
     });
     //http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     function selectorInViewport (selector) {
-      var el = document.querySelector(selector);
-      if(el){    
-        var rect = el.getBoundingClientRect();
-        var a = rect.top >= 0;
-        var b = rect.left >= 0;
-        var c = rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
-        var d = rect.right <= (window.innerWidth || document.documentElement.clientWidth);
-        return a && b && c && d;
+      var element = document.querySelector(selector);
+      if(element){    
+        var rect = element.getBoundingClientRect();
+        
+        var topInside = rect.top >= 0;
+        var leftInside = rect.left >= 0;
+        var bottomInside = rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+        var rightInside = rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+        var widerThanWindow = element.scrollWidth > window.innerWidth;
+        var tallerThanWindow = element.scrollHeight > window.innerHeight;
+        
+        return topInside && leftInside && (bottomInside || tallerThanWindow) && (rightInside || widerThanWindow);
       } else {
         return false;
       }
@@ -109,45 +113,37 @@
       
     });
     
-    it('when pointed at a table, all elements in a column are the same width', function(done){
+    it('when pointed at a table, all elements in a column are the same width', function(){
       _$('#testTable').fixedHeaderRewrite();
       var numberOfRows = _$('tr').length;
       var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
       var uniformWidth = true;
-      var point = 0;
-      for(var j = 0; j < numberOfColumns; j++){        
+      for(var j = 1; j <= numberOfColumns; j++){        
         var width = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(' + j +')').width();
-        for(var i = 0; i < numberOfRows; i++){
+        for(var i = 1; i <= numberOfRows; i++){
           var rowWidth = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').width();
           if(rowWidth !== width){
             uniformWidth = false;
           }
         }
-          point = point + 1;
       }
-      setTimeout(function(){        
-        console.log(point)
-        assert.isTrue(uniformWidth);
-        done();
-      }, 100);
+      assert.isTrue(uniformWidth);
     });
     
     it('when pointed at a table with a fixed column, all elements in a column are the same width', function(){
       _$('#testTable').fixedHeaderRewrite(true);
-      var numberOfRows = _$('tr').length;
+      var numberOfRows = _$('#testTable > tbody > tr').length;
       var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
       var uniformWidth = true;
-      
-      for(var j = 0; j < numberOfColumns; j++){        
+      for(var j = 1; j <= numberOfColumns; j++){        
         var width = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(' + j +')').width();
-        for(var i = 0; i < numberOfRows; i++){
+        for(var i = 1; i <= numberOfRows; i++){
           var rowWidth = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').width();
           if(rowWidth !== width){
             uniformWidth = false;
           }
         }
       }
-      
       assert.isTrue(uniformWidth);
     });
     
@@ -157,16 +153,15 @@
       var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
       var uniformHeight = true;
       
-      for(var j = 0; j < numberOfRows; j++){
+      for(var j = 1; j <= numberOfRows; j++){
         var height = _$('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(' + j + ') > td').height();
-        for(var i = 0; i < numberOfColumns; i++){
+        for(var i = 1; i <= numberOfColumns; i++){
           var rowHeight = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').height();
           if(rowHeight !== height){
             uniformHeight = false;
           }
         }
       }
-      
       assert.isTrue(uniformHeight);
     });
     
@@ -180,7 +175,7 @@
         setTimeout(function(){
             assert.isTrue(!!selectorInViewport( 'thead'), 'header is initially visible');
             done();
-          }, 300);
+          }, 100);
       });
       
       it( 'header is no longer visible, because we have scrolled away', function(done){        
