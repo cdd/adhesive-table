@@ -2,7 +2,7 @@
  * Licensed under the MIT license.
  */
 (function ($) {
-  $.fn.fixedHeaderRewrite = function (method, options) {
+  $.fn.fixedHeaderRewrite = function (action, options) {
     // Override default options with passed-in options.
     options = $.extend({}, $.fn.fixedHeaderRewrite.options, options);
         
@@ -32,7 +32,7 @@
             $fixedBody,
             widthMinusScrollbar;
 
-        settings.originalTable = $(this).clone();
+        settings.originalTable = $self.clone();
         settings.includePadding = helpers._isPaddingIncludedWithWidth();
         settings.scrollbarOffset = helpers._getScrollbarWidth();
 
@@ -47,17 +47,11 @@
         }
 
         $wrapper = $self.closest('.fht-table-wrapper');
-
-        if(settings.fixedColumn === true && settings.fixedColumns <= 0) {
-          settings.fixedColumns = 1;
-        }
-
+        
         if (settings.fixedColumns > 0 && $wrapper.find('.fht-fixed-column').length === 0) {
           $self.wrap('<div class="fht-fixed-body"></div>');
-
           $('<div class="fht-fixed-column"></div>').prependTo($wrapper);
-
-          $fixedBody    = $wrapper.find('.fht-fixed-body');
+          $fixedBody = $wrapper.find('.fht-fixed-body');
         }
 
         $wrapper.css({ width: '100%', height: '100%' });
@@ -108,11 +102,9 @@
 
       /* Destory fixedHeaderTable and return table to original state */
       destroy: function() {
-        var $self    = $(this),
-            self     = this,
-            $wrapper = $self.closest('.fht-table-wrapper');
+        var $wrapper = $(this).closest('.fht-table-wrapper');
 
-        $self.insertBefore($wrapper)
+        $(this).insertBefore($wrapper)
           .removeAttr('style')
           .removeClass('fht-table fht-table-init')
           .find('.fht-cell')
@@ -120,7 +112,7 @@
 
         $wrapper.remove();
 
-        return self;
+        return this;
       }
 
     };
@@ -161,13 +153,11 @@
         });
       },
 
-      /* return void */
       _fixHeightWithCss: function ($obj, tableProps) {
         var height = settings.includePadding ? $obj.height() : $obj.parent().height();
         $obj.css({ 'height': height + tableProps.border });
       },
 
-      /* return void */
       _fixWidthWithCss: function($obj, tableProps, width) {
         $obj.each(function() {
           var includedPadding = settings.includePadding ? $(this).width() : $(this).parent().width();
@@ -176,7 +166,6 @@
         });
       },
 
-      /* return void */
       _setupFixedColumn: function ($obj, obj, tableProps) {
         var $self             = $obj,
             $wrapper          = $self.closest('.fht-table-wrapper'),
@@ -223,10 +212,7 @@
           .append($firstThChildren.clone());
 
         $tbody.appendTo($fixedColumn)
-          .css({
-            'margin-top': -1,
-            'height': fixedBodyHeight + tableProps.border
-          });
+          .css({ 'margin-top': -1, 'height': fixedBodyHeight + tableProps.border });
 
         $firstTdChildren.each(function(index) {
           if (index % settings.fixedColumns === 0) {
@@ -240,14 +226,15 @@
           $(this).clone().appendTo($newRow);
         });
 
-        // set width of fixed column wrapper
+        // set widths of fixed column & body table  wrappers
         $fixedColumn.css({ 'height': 0, 'width': fixedColumnWidth });
-
+        $fixedBody.css({ 'width': fixedBodyWidth });
+        
         // bind wheel events
         var maxTop = $fixedColumn.find('.fht-tbody .fht-table').height() - $fixedColumn.find('.fht-tbody').height();
         $fixedColumn.find('.fht-tbody .fht-table').bind('wheel', function(event) {
+          if (event.originalEvent.deltaY === 0) { return; }
           var deltaY = -1 * event.originalEvent.deltaY ;/// (20 * 120);// TODO browser stuff
-          if (deltaY === 0) { return; }
           
           var top = parseInt($(this).css('marginTop'), 10) + (deltaY > 0 ? 120 : -120);
           top = (top > 0 ? 0 : ( top < -maxTop ? -maxTop : top) );
@@ -257,9 +244,6 @@
           return false;
         });
 
-
-        // set width of body table wrapper
-        $fixedBody.css({ 'width': fixedBodyWidth });
       },
 
 
@@ -333,8 +317,8 @@
                 .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body'),
               $textarea2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>')
                 .css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body');
-
-          scrollbarWidth = $textarea1.width() - $textarea2.width() + 2; // + 2 for border offset
+          var borderOffset = 2;
+          scrollbarWidth = $textarea1.width() - $textarea2.width() + borderOffset;
           $textarea1.add($textarea2).remove();
         } else {
           var $div = $('<div />')
@@ -345,26 +329,18 @@
           scrollbarWidth = 100 - $div.width();
           $div.parent().remove();
         }
-
         return scrollbarWidth;
       }
 
     };
     
-    if(method === 'destroy'){
+    if(action === 'destroy'){
       return methods.destroy.apply(this);
-    } else if (!!method || !method){
+    } else if (typeof action === 'boolean' || typeof action === 'undefined'){
       return methods.init.apply(this, arguments);      
     } else {
-      $.error('Input "' +  method + '" is not valid for the fixedHeaderRewrite plugin!');      
+      $.error('Input "' +  action + '" is not valid for the fixedHeaderRewrite plugin!');      
     }  
-    // if (methods[method]) {
-    //   return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-    // } else if (typeof method === 'object' || !method) {
-    //   return methods.init.apply(this, arguments);
-    // } else {
-    //   $.error('Method "' +  method + '" does not exist in fixedHeaderTable plugin!');
-    // }
     
   };
 }(jQuery));

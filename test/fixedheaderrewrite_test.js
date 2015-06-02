@@ -2,7 +2,7 @@
   describe('Fixed Header Table Rewrite', function(){
     
     after(function(){
-      // _$('#mocha-fixture').hide();
+      _$('#mocha-fixture').hide();
     });
     //http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     function selectorInViewport (selector) {
@@ -35,8 +35,36 @@
       }, Error, 'Invalid table mark-up');
     });
     
-      // it('throws if given invalid arguments', function(){});
-      // 
+    it('throws if given invalid arguments', function(){
+      assert.throws(function(){
+        _$('#testTable').fixedHeaderRewrite('wonk');
+      }, Error, 'Input "wonk" is not valid for the fixedHeaderRewrite plugin!');
+      
+      assert.throws(function(){
+        _$('#testTable').fixedHeaderRewrite(NaN);
+      }, Error, 'Input "NaN" is not valid for the fixedHeaderRewrite plugin!');
+      
+      assert.throws(function(){
+        _$('#testTable').fixedHeaderRewrite({});
+      }, Error, 'Input "[object Object]" is not valid for the fixedHeaderRewrite plugin!');
+      
+      assert.throws(function(){
+        _$('#testTable').fixedHeaderRewrite([]);
+      }, Error, 'Input "" is not valid for the fixedHeaderRewrite plugin!');
+      
+      assert.doesNotThrow(function(){
+        _$('#testTable').fixedHeaderRewrite(false);
+      }, Error, 'function does not throw');
+      
+      assert.doesNotThrow(function(){
+        _$('#testTable').fixedHeaderRewrite(true);
+      }, Error, 'function does not throw');
+      
+      assert.doesNotThrow(function(){
+        _$('#testTable').fixedHeaderRewrite('destroy');
+      }, Error, 'function does not throw');
+    });
+      
     
     it('loads style sheet automatically', function(){
       
