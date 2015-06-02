@@ -28,7 +28,7 @@
     });
     
     after(function(){
-      // _$('#mocha-fixture').hide();
+      _$('#mocha-fixture').hide();
     });
     //http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     function selectorInViewport (selector) {
@@ -222,6 +222,10 @@
             done();
           }, 10); 
         });
+        
+        it('does not see the sticky column', function(){
+          selectorInViewport('#mocha-fixture > div > div.fht-fixed-column');
+        });
       });
       
       
@@ -281,30 +285,28 @@
       });
     });
     
-    // describe('Caching System', function(){
-    //   beforeEach(function(){
-    //     _$('#testTable').fixedHeaderRewrite('destroy');
-    //   });
-    //   
-    //   it('Caches values that would be waste to compute again in a global variable', function(){
-    //     _$('#testTable').fixedHeaderRewrite();
-    //     var cache = window.fixedHeaderRewriteCache;
-    //     assert.isTrue(!!cache);
-    //     assert.isTrue(!!cache.requiresPadding);
-    //     assert.isTrue(!!cache.scrollBarWidth);
-    //   });
-    //   
-    //   it('Cached variables are not modified on additional data calls', function(){
-    //     
-    //   });
-    //   
-    //   it('Calling destroy resets the cache', function(){
-    //     _$('#testTable').fixedHeaderRewrite();
-    //     _$('#testTable').fixedHeaderRewrite('destroy');
-    //     var cache = window.fixedHeaderRewriteCache;
-    //     assert.isTrue(!cache);
-    //   });
-    // });
+    describe('Caching System', function(){
+      beforeEach(function(){
+        _$('#testTable').fixedHeaderRewrite('destroy');
+      });
+      
+      it('Caches values that would be waste to compute again in a global variable', function(){
+        _$('#testTable').fixedHeaderRewrite();
+        var cache = window.fixedHeaderRewriteCache;
+        assert.isTrue(!!cache);
+        assert.isTrue(!!cache.getScrollbarWidth);
+        assert.isTrue(!!cache.paddingInfo);
+      });
+      
+      it('Calling destroy resets the cache', function(){
+        _$('#testTable').fixedHeaderRewrite();
+        _$('#testTable').fixedHeaderRewrite('destroy');
+        var cache = window.fixedHeaderRewriteCache;
+        assert.isTrue(!!cache);
+        assert.isTrue(!cache.getScrollbarWidth);
+        assert.isTrue(!cache.paddingInfo);
+      });
+    });
   });    
   
 }());
