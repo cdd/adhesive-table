@@ -3,27 +3,15 @@
  */
 (function ($) {
   $.fn.fixedHeaderRewrite = function (method, options) {
-    // forcibly append the formatting css to the document
-    if($('head > link[href="../src/fixedHeaderRewrite.css"]').length === 0){
-      $('head').prepend('<link rel="stylesheet" href="../src/fixedHeaderRewrite.css" type="text/css" />');
-    }
     // Override default options with passed-in options.
     options = $.extend({}, $.fn.fixedHeaderRewrite.options, options);
         
-    // plugin's default options
-    var defaults = {
-      themeClass:     'fht-default',
-      fixedColumns:    0, // fixed first columns
-      fixedColumn:     false, // For backward-compatibility
-    };
     var settings = {};
     
     // public methods
     var methods = {
-      init: function (options) {
-        settings = $.extend({}, defaults, options);
-
-        // iterate through all the DOM elements we are attaching the plugin to
+      init: function (fixedColumnsSelected) {
+        settings = {fixedColumns: fixedColumnsSelected ? 1 : 0 };
         return this.each(function () {
           if (helpers._isTable( $(this) )) {
             methods.setup.apply(this, Array.prototype.slice.call(arguments, 1));
@@ -47,7 +35,6 @@
         settings.originalTable = $(this).clone();
         settings.includePadding = helpers._isPaddingIncludedWithWidth();
         settings.scrollbarOffset = helpers._getScrollbarWidth();
-        settings.themeClassName = settings.themeClass;
 
         widthMinusScrollbar = $self.parent().width() - settings.scrollbarOffset;
 
@@ -73,8 +60,7 @@
           $fixedBody    = $wrapper.find('.fht-fixed-body');
         }
 
-        $wrapper.css({ width: '100%', height: '100%' })
-                .addClass(settings.themeClassName);
+        $wrapper.css({ width: '100%', height: '100%' });
 
         if (!$self.hasClass('fht-table-init')) {
           $self.wrap('<div class="fht-tbody"></div>');
@@ -279,8 +265,7 @@
 
       /* return object
        * Widths of each thead cell and tbody cell for the first rows.
-       * Used in fixing widths for the fixed header.
-       */
+       * Used in fixing widths for the fixed header. */
       _getTableProps: function($obj) {
         var firstTh = $obj.find('th:first-child');
         var tableProp = { thead: {}, 
@@ -290,7 +275,6 @@
         $obj.find('thead tr:first-child > *').each(function(index) {
           tableProp.thead[index] = $(this).width() + tableProp.border;
         });
-
 
         $obj.find('tbody tr:first-child > *').each(function(index) {
           tableProp.tbody[index] = $(this).width() + tableProp.border;
@@ -312,9 +296,7 @@
             'width': parseInt(cellArray[index], 10)
           });
 
-          /* Fixed Header should extend the full width
-           * to align with the scrollbar of the body
-           */
+          /* Fixed Header should extend the full width to align with the scrollbar of the body */
           if (!$(this).closest('.fht-tbody').length && $(this).is(':last-child') && !$(this).closest('.fht-fixed-column').length) {
             var padding = Math.max((($(this).innerWidth() - $(this).width()) / 2), settings.scrollbarOffset);
             $(this).css({
@@ -368,14 +350,21 @@
       }
 
     };
-      
-    if (methods[method]) {
-      return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-    } else if (typeof method === 'object' || !method) {
-      return methods.init.apply(this, arguments);
+    
+    if(method === 'destroy'){
+      return methods.destroy.apply(this);
+    } else if (!!method || !method){
+      return methods.init.apply(this, arguments);      
     } else {
-      $.error('Method "' +  method + '" does not exist in fixedHeaderTable plugin!');
-    }
+      $.error('Input "' +  method + '" is not valid for the fixedHeaderRewrite plugin!');      
+    }  
+    // if (methods[method]) {
+    //   return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+    // } else if (typeof method === 'object' || !method) {
+    //   return methods.init.apply(this, arguments);
+    // } else {
+    //   $.error('Method "' +  method + '" does not exist in fixedHeaderTable plugin!');
+    // }
     
   };
 }(jQuery));

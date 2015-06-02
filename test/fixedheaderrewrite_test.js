@@ -51,7 +51,7 @@
     it('when pointed at a table, many things are wrapped', function(){
       _$('#testTable').fixedHeaderRewrite();
       var tableWrapper = document.getElementById('mocha-fixture').children[0];
-      assert.equal(tableWrapper.getAttribute('class'), 'fht-table-wrapper fht-default', 'table wrapper should have appropriate classes appended');
+      assert.equal(tableWrapper.getAttribute('class'), 'fht-table-wrapper', 'table wrapper should have appropriate classes appended');
     
       var headWrapper = tableWrapper.children[0];
       assert.equal(headWrapper.getAttribute('class'), 'fht-thead', 'table header wrapper should have appropriate classes');
@@ -95,7 +95,7 @@
         }, 10);
       });            
     });
-
+    
     describe('given no arguments, running the plugin gives a sticky header', function(){
       beforeEach(function(){
         _$('#testTable').fixedHeaderRewrite();
@@ -129,7 +129,7 @@
       });
       
       beforeEach(function(){
-        _$('#testTable').fixedHeaderRewrite({fixedColumn: true});
+        _$('#testTable').fixedHeaderRewrite(true);
       });
       
       it('should see the cloned column', function(){
