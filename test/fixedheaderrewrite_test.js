@@ -1,8 +1,34 @@
 (function () {  
   describe('Fixed Header Table Rewrite', function(){
     
+    before(function(){
+      //build the test fixture
+      var rows = 40;
+      var columns = 10;
+      for(var i = 1; i <= columns; i++){
+        var headerCell = _$('<th>Column ' + i + '</th>');
+        headerCell.css('background-color', 'hsl(' + 360 / columns * i + ', 100%, 80%)');
+        _$('#testTable > thead > tr').append(headerCell);
+      }
+      for(i = 1; i <= rows; i++){
+        _$('#testTable > tbody').append('<tr></tr>');
+      }
+      _$('#testTable > tbody > tr').each(function(i, el){
+        for(var j = 1; j <= columns; j++){
+          var randContent = [];
+          for(var k = 0; k < j; k++){
+            randContent.push('bats');
+          }
+          randContent = randContent.join();
+          var cell = _$('<td>BATMANG ROW ' + i + ' COLUMN ' + j + ' ' + randContent + '</td>');
+          cell.css('background-color', 'hsl(' + 360 / columns * i + ', 100%, 80%)');
+          _$(el).append(cell);
+        }
+      });
+    });
+    
     after(function(){
-      _$('#mocha-fixture').hide();
+      // _$('#mocha-fixture').hide();
     });
     //http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
     function selectorInViewport (selector) {
@@ -64,17 +90,6 @@
         _$('#testTable').fixedHeaderRewrite('destroy');
       }, Error, 'function does not throw');
     });
-      
-    
-    it('loads style sheet automatically', function(){
-      
-      _$('#testTable').fixedHeaderRewrite();
-      _$('#testTable').fixedHeaderRewrite();
-      _$('#testTable').fixedHeaderRewrite();
-      
-      var foundStyleSheets = _$('head > link[href="../src/fixedHeaderRewrite.css"]');
-      assert.equal(foundStyleSheets.length, 1, 'a single copy of the style sheet should be found');
-    });
     
     it('when pointed at a table, many things are wrapped', function(){
       _$('#testTable').fixedHeaderRewrite();
@@ -92,6 +107,67 @@
       assert.equal(bodyWrapper.children.length, 1, 'only contains a single element');
       assert.equal(bodyWrapper.children[0].tagName, 'TABLE', 'contains a table');
       
+    });
+    
+    it('when pointed at a table, all elements in a column are the same width', function(done){
+      _$('#testTable').fixedHeaderRewrite();
+      var numberOfRows = _$('tr').length;
+      var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
+      var uniformWidth = true;
+      var point = 0;
+      for(var j = 0; j < numberOfColumns; j++){        
+        var width = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(' + j +')').width();
+        for(var i = 0; i < numberOfRows; i++){
+          var rowWidth = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').width();
+          if(rowWidth !== width){
+            uniformWidth = false;
+          }
+        }
+          point = point + 1;
+      }
+      setTimeout(function(){        
+        console.log(point)
+        assert.isTrue(uniformWidth);
+        done();
+      }, 100);
+    });
+    
+    it('when pointed at a table with a fixed column, all elements in a column are the same width', function(){
+      _$('#testTable').fixedHeaderRewrite(true);
+      var numberOfRows = _$('tr').length;
+      var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
+      var uniformWidth = true;
+      
+      for(var j = 0; j < numberOfColumns; j++){        
+        var width = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(' + j +')').width();
+        for(var i = 0; i < numberOfRows; i++){
+          var rowWidth = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').width();
+          if(rowWidth !== width){
+            uniformWidth = false;
+          }
+        }
+      }
+      
+      assert.isTrue(uniformWidth);
+    });
+    
+    it('when pointed at a table with a fixed column, all elements in a row have the same height', function(){
+      _$('#testTable').fixedHeaderRewrite('destroy');
+      var numberOfRows = _$('tr').length;
+      var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
+      var uniformHeight = true;
+      
+      for(var j = 0; j < numberOfRows; j++){
+        var height = _$('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(' + j + ') > td').height();
+        for(var i = 0; i < numberOfColumns; i++){
+          var rowHeight = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').height();
+          if(rowHeight !== height){
+            uniformHeight = false;
+          }
+        }
+      }
+      
+      assert.isTrue(uniformHeight);
     });
     
     describe('table is not sticky if not run', function(){

@@ -26,18 +26,14 @@
         var $self       = $(this),
             self        = this,
             $thead      = $self.find('thead'),
-            $wrapper,
-            $divHead,
             $divBody,
-            $fixedBody,
-            widthMinusScrollbar;
+            $fixedBody;
 
         settings.originalTable = $self.clone();
         settings.includePadding = helpers._isPaddingIncludedWithWidth();
         settings.scrollbarOffset = helpers._getScrollbarWidth();
 
-        widthMinusScrollbar = $self.parent().width() - settings.scrollbarOffset;
-
+        var widthMinusScrollbar = $self.parent().width() - settings.scrollbarOffset;
         $self.css({ width: widthMinusScrollbar });
 
 
@@ -46,7 +42,7 @@
           $self.wrap('<div class="fht-table-wrapper"></div>');
         }
 
-        $wrapper = $self.closest('.fht-table-wrapper');
+        var $wrapper = $self.closest('.fht-table-wrapper');
         
         if (settings.fixedColumns > 0 && $wrapper.find('.fht-fixed-column').length === 0) {
           $self.wrap('<div class="fht-fixed-body"></div>');
@@ -65,7 +61,9 @@
         var tableProps = helpers._getTableProps($self);
 
         helpers._setupClone($divBody, tableProps.tbody);
-
+        
+        
+        var $divHead;
         if (!$self.hasClass('fht-table-init')) {
           if (settings.fixedColumns > 0) {
             $divHead = $('<div class="fht-thead"><table class="fht-table"></table></div>').prependTo($fixedBody);
@@ -92,7 +90,7 @@
         $self.addClass('fht-table-init');
 
         if (settings.fixedColumns > 0) {
-          helpers._setupFixedColumn($self, self, tableProps);
+          helpers._setupFixedColumn($self, tableProps);
         }
 
         helpers._bindScroll($divBody, tableProps);
@@ -117,10 +115,7 @@
 
     };
     
-    // private methods
     var helpers = {
-
-      /* return boolean */
       _isTable: function($obj) {
         var $self = $obj,
             hasTable = $self.is('table'),
@@ -130,26 +125,16 @@
         return hasTable && hasThead && hasTbody;
       },
 
-      /* return void */
-      _bindScroll: function($obj) {
-        var $self = $obj,
-            $wrapper = $self.closest('.fht-table-wrapper'),
+      _bindScroll: function($self) {
+        var $wrapper = $self.closest('.fht-table-wrapper'),
             $thead = $self.siblings('.fht-thead');
 
         $self.bind('scroll', function() {
           if (settings.fixedColumns > 0) {
-            var $fixedColumns = $wrapper.find('.fht-fixed-column');
-
-            $fixedColumns.find('.fht-tbody table')
-              .css({
-                  'margin-top': -$self.scrollTop()
-              });
+            $wrapper.find('.fht-fixed-column').find('.fht-tbody table')
+              .css({ 'margin-top': -$self.scrollTop() });
           }
-
-          $thead.find('table')
-            .css({
-              'margin-left': -this.scrollLeft
-            });
+          $thead.find('table').css({ 'margin-left': -this.scrollLeft });
         });
       },
 
@@ -166,26 +151,20 @@
         });
       },
 
-      _setupFixedColumn: function ($obj, obj, tableProps) {
-        var $self             = $obj,
-            $wrapper          = $self.closest('.fht-table-wrapper'),
+      _setupFixedColumn: function ($self, tableProps) {
+        var $wrapper          = $self.closest('.fht-table-wrapper'),
             $fixedBody        = $wrapper.find('.fht-fixed-body'),
             $fixedColumn      = $wrapper.find('.fht-fixed-column'),
             $thead            = $('<div class="fht-thead"><table class="fht-table"><thead><tr></tr></thead></table></div>'),
             $tbody            = $('<div class="fht-tbody"><table class="fht-table"><tbody></tbody></table></div>'),
             fixedBodyWidth    = $wrapper.width(),
-            fixedBodyHeight   = $fixedBody.find('.fht-tbody').height() - settings.scrollbarOffset,
-            $firstThChildren,
-            $firstTdChildren,
-            fixedColumnWidth,
-            $newRow,
-            firstTdChildrenSelector;
+            fixedBodyHeight   = $fixedBody.find('.fht-tbody').height() - settings.scrollbarOffset;
 
         $thead.find('table.fht-table').addClass(settings.originalTable.attr('class'));
         $tbody.find('table.fht-table').addClass(settings.originalTable.attr('class'));
 
-        $firstThChildren = $fixedBody.find('.fht-thead thead tr > *:lt(' + settings.fixedColumns + ')');
-        fixedColumnWidth = settings.fixedColumns * tableProps.border;
+        var $firstThChildren = $fixedBody.find('.fht-thead thead tr > *:lt(' + settings.fixedColumns + ')');
+        var fixedColumnWidth = settings.fixedColumns * tableProps.border;
         $firstThChildren.each(function() {
           fixedColumnWidth += $(this).outerWidth(true);
         });
@@ -199,38 +178,33 @@
           tdWidths.push($(this).width());
         });
 
-        firstTdChildrenSelector = 'tbody tr > *:not(:nth-child(n+' + (settings.fixedColumns + 1) + '))';
-        $firstTdChildren = $fixedBody.find(firstTdChildrenSelector)
+        var firstTdChildrenSelector = 'tbody tr > *:not(:nth-child(n+' + (settings.fixedColumns + 1) + '))';
+        var $firstTdChildren = $fixedBody.find(firstTdChildrenSelector)
           .each(function(index) {
             helpers._fixHeightWithCss($(this), tableProps);
             helpers._fixWidthWithCss($(this), tableProps, tdWidths[index % settings.fixedColumns] );
           });
 
         // clone header
-        $thead.appendTo($fixedColumn)
-          .find('tr')
-          .append($firstThChildren.clone());
+        $thead.appendTo($fixedColumn).find('tr').append($firstThChildren.clone());
 
         $tbody.appendTo($fixedColumn)
           .css({ 'margin-top': -1, 'height': fixedBodyHeight + tableProps.border });
 
+        var $newRow;
         $firstTdChildren.each(function(index) {
           if (index % settings.fixedColumns === 0) {
             $newRow = $('<tr></tr>').appendTo($tbody.find('tbody'));
-
-            if (settings.altClass && $(this).parent().hasClass(settings.altClass)) {
-              $newRow.addClass(settings.altClass);
-            }
           }
 
           $(this).clone().appendTo($newRow);
         });
 
-        // set widths of fixed column & body table  wrappers
+        // set widths of fixed column & body table wrappers
         $fixedColumn.css({ 'height': 0, 'width': fixedColumnWidth });
         $fixedBody.css({ 'width': fixedBodyWidth });
         
-        // bind wheel events
+        // bind vertical wheel events for fixed column
         var maxTop = $fixedColumn.find('.fht-tbody .fht-table').height() - $fixedColumn.find('.fht-tbody').height();
         $fixedColumn.find('.fht-tbody .fht-table').bind('wheel', function(event) {
           if (event.originalEvent.deltaY === 0) { return; }
@@ -247,8 +221,7 @@
       },
 
 
-      /* return object
-       * Widths of each thead cell and tbody cell for the first rows.
+      /* Widths of each thead cell and tbody cell for the first rows.
        * Used in fixing widths for the fixed header. */
       _getTableProps: function($obj) {
         var firstTh = $obj.find('th:first-child');
@@ -268,24 +241,23 @@
       },
 
       /* Fix widths of each cell in the first row of obj. */
-      _setupClone: function($obj, cellArray) {
-        var $self    = $obj,
-            selector = ($self.find('thead').length) ? 'thead tr:first-child > *' : 'tbody tr:first-child > *',
+      _setupClone: function($self, cellArray) {
+        var selector = ($self.find('thead').length) ? 'thead tr:first-child > *' : 'tbody tr:first-child > *',
             $cell;
 
         $self.find(selector).each(function(index) {
           $cell = ($(this).find('div.fht-cell').length) ? $(this).find('div.fht-cell') : $('<div class="fht-cell"></div>').appendTo($(this));
-
-          $cell.css({
-            'width': parseInt(cellArray[index], 10)
-          });
+          $cell.css({ 'width': parseInt(cellArray[index], 10) });
 
           /* Fixed Header should extend the full width to align with the scrollbar of the body */
-          if (!$(this).closest('.fht-tbody').length && $(this).is(':last-child') && !$(this).closest('.fht-fixed-column').length) {
-            var padding = Math.max((($(this).innerWidth() - $(this).width()) / 2), settings.scrollbarOffset);
-            $(this).css({
-              'padding-right': parseInt($(this).css('padding-right')) + padding + 'px'
-            });
+          var a = !$(this).closest('.fht-tbody').length;
+          var b = $(this).is(':last-child');
+          var c = !$(this).closest('.fht-fixed-column').length;
+          if ( a && b  && c) {
+            var widthDifference = ($(this).innerWidth() - $(this).width()) / 2;
+            var padding = Math.max(widthDifference, settings.scrollbarOffset);
+            var computedPadding = parseInt($(this).css('padding-right')) + padding + 'px';
+            $(this).css({ 'padding-right': computedPadding });
           }
         });
       },
