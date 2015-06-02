@@ -1,14 +1,13 @@
 {
-  "name": "fixedheaderrewrite",
+  "name": "adhesiveTable",
   "version": "",
-  "description": "Fixed Header Table Rewrite",
+  "description": "Rewrite of mark maleks Fixed Header Table in a more minimal jquery",
   "keywords": [
     "jquery-plugin"
   ],
   "author": {
     "name": "Andrew McNutt",
-    "email": "andrew@collaborativedrug.com",
-    "url": "https://github.com/"
+    "email": "andrew@collaborativedrug.com"
   },
   "repository": "/fixedheaderrewrite",
   "license": "MIT",

@@ -1,0 +1,34 @@
+/* Copyright (c) 2015 CDD
+ * Licensed under the MIT license.
+ */
+
+.adhesive-table, .adhesive-table thead, .adhesive-table tfoot, .adhesive-table tbody, .adhesive-table tr, .adhesive-table th, .adhesive-table td {
+    margin: 0;
+  	padding: 0;
+  	font-size: 100%;
+  	font: inherit;
+  	vertical-align: top;
+}
+.adhesive-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.adhesive-table-wrapper, .adhesive-table-wrapper .adhesive-thead, .adhesive-table-wrapper .adhesive-tfoot, .adhesive-table-wrapper .adhesive-fixed-column .adhesive-tbody, .adhesive-table-wrapper .adhesive-fixed-body .adhesive-tbody, .adhesive-table-wrapper .adhesive-tbody {
+  	overflow: hidden;
+  	position: relative;
+}
+.adhesive-table-wrapper .adhesive-fixed-body .adhesive-tbody, .adhesive-table-wrapper .adhesive-tbody {
+    overflow: auto;
+}
+.adhesive-table-wrapper .adhesive-table .adhesive-cell {
+    overflow: hidden;
+    height: 1px;
+}
+.adhesive-table-wrapper .adhesive-fixed-column, .adhesive-table-wrapper .adhesive-fixed-body {
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+.adhesive-table-wrapper .adhesive-fixed-column {
+    z-index: 1;
+}

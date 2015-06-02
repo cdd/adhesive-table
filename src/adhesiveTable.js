@@ -2,9 +2,9 @@
  * Licensed under the MIT license.
  */
 (function ($) {
-  $.fn.fixedHeaderRewrite = function (action, options) {
+  $.fn.adhesiveTable = function (action, options) {
     // Override default options with passed-in options.
-    options = $.extend({}, $.fn.fixedHeaderRewrite.options, options);
+    options = $.extend({}, $.fn.adhesiveTable.options, options);
     window.fixedHeaderRewriteCache = {};    
     var settings = {};
     
@@ -36,42 +36,42 @@
         $self.css({ width: widthMinusScrollbar });
 
 
-        if (!$self.closest('.fht-table-wrapper').length) {
-          $self.addClass('fht-table');
-          $self.wrap('<div class="fht-table-wrapper"></div>');
+        if (!$self.closest('.adhesive-table-wrapper').length) {
+          $self.addClass('adhesive-table');
+          $self.wrap('<div class="adhesive-table-wrapper"></div>');
         }
 
-        var $wrapper = $self.closest('.fht-table-wrapper');
+        var $wrapper = $self.closest('.adhesive-table-wrapper');
         
-        if (settings.fixedColumns > 0 && $wrapper.find('.fht-fixed-column').length === 0) {
-          $self.wrap('<div class="fht-fixed-body"></div>');
-          $('<div class="fht-fixed-column"></div>').prependTo($wrapper);
-          $fixedBody = $wrapper.find('.fht-fixed-body');
+        if (settings.fixedColumns > 0 && $wrapper.find('.adhesive-fixed-column').length === 0) {
+          $self.wrap('<div class="adhesive-fixed-body"></div>');
+          $('<div class="adhesive-fixed-column"></div>').prependTo($wrapper);
+          $fixedBody = $wrapper.find('.adhesive-fixed-body');
         }
 
         $wrapper.css({ width: '100%', height: '100%' });
 
-        if (!$self.hasClass('fht-table-init')) {
-          $self.wrap('<div class="fht-tbody"></div>');
+        if (!$self.hasClass('adhesive-table-init')) {
+          $self.wrap('<div class="adhesive-tbody"></div>');
         }
 
-        var $divBody = $self.closest('.fht-tbody');
+        var $divBody = $self.closest('.adhesive-tbody');
 
         var tableProps = helpers._getTableProps($self);
         helpers._setupClone($divBody, tableProps.tbody);
         
         //build and copy the sticky header if necessary
         var $divHead;
-        if (!$self.hasClass('fht-table-init')) {
-          $divHead = $('<div class="fht-thead"><table class="fht-table"></table></div>');
+        if (!$self.hasClass('adhesive-table-init')) {
+          $divHead = $('<div class="adhesive-thead"><table class="adhesive-table"></table></div>');
           $divHead.prependTo(settings.fixedColumns > 0 ? $fixedBody : $wrapper);
-          $divHead.find('table.fht-table')
+          $divHead.find('table.adhesive-table')
             .addClass(settings.originalTable.attr('class'))
             .attr('style', settings.originalTable.attr('style'));
 
           $thead.clone().appendTo($divHead.find('table'));
         } else {
-          $divHead = $wrapper.find('div.fht-thead');
+          $divHead = $wrapper.find('div.adhesive-thead');
         }
         helpers._setupClone($divHead, tableProps.thead);
 
@@ -81,7 +81,7 @@
         var tbodyHeight = $wrapper.height() - $thead.outerHeight(true) - tableProps.border;
         $divBody.css({ 'height': tbodyHeight });
 
-        $self.addClass('fht-table-init');
+        $self.addClass('adhesive-table-init');
 
         if (settings.fixedColumns > 0) {
           helpers._setupFixedColumn($self, tableProps);
@@ -94,12 +94,12 @@
 
       /* Destory fixedHeaderTable and return table to original state */
       destroy: function() {
-        var $wrapper = $(this).closest('.fht-table-wrapper');
+        var $wrapper = $(this).closest('.adhesive-table-wrapper');
 
         $(this).insertBefore($wrapper)
           .removeAttr('style')
-          .removeClass('fht-table fht-table-init')
-          .find('.fht-cell')
+          .removeClass('adhesive-table adhesive-table-init')
+          .find('.adhesive-cell')
           .remove();
           
         $wrapper.remove();        
@@ -119,12 +119,12 @@
       },
 
       _bindScroll: function($self) {
-        var $wrapper = $self.closest('.fht-table-wrapper'),
-            $thead = $self.siblings('.fht-thead');
+        var $wrapper = $self.closest('.adhesive-table-wrapper'),
+            $thead = $self.siblings('.adhesive-thead');
 
         $self.bind('scroll', function() {
           if (settings.fixedColumns > 0) {
-            $wrapper.find('.fht-fixed-column').find('.fht-tbody table')
+            $wrapper.find('.adhesive-fixed-column').find('.adhesive-tbody table')
               .css({ 'margin-top': -$self.scrollTop() });
           }
           $thead.find('table').css({ 'margin-left': -this.scrollLeft });
@@ -145,18 +145,18 @@
       },
 
       _setupFixedColumn: function ($self, tableProps) {
-        var $wrapper        = $self.closest('.fht-table-wrapper'),
-            $fixedBody      = $wrapper.find('.fht-fixed-body'),
-            $fixedColumn    = $wrapper.find('.fht-fixed-column'),
-            $thead          = $('<div class="fht-thead"><table class="fht-table"><thead><tr></tr></thead></table></div>'),
-            $tbody          = $('<div class="fht-tbody"><table class="fht-table"><tbody></tbody></table></div>'),
+        var $wrapper        = $self.closest('.adhesive-table-wrapper'),
+            $fixedBody      = $wrapper.find('.adhesive-fixed-body'),
+            $fixedColumn    = $wrapper.find('.adhesive-fixed-column'),
+            $thead          = $('<div class="adhesive-thead"><table class="adhesive-table"><thead><tr></tr></thead></table></div>'),
+            $tbody          = $('<div class="adhesive-tbody"><table class="adhesive-table"><tbody></tbody></table></div>'),
             fixedBodyWidth  = $wrapper.width(),
-            fixedBodyHeight = $fixedBody.find('.fht-tbody').height() - settings.scrollbarOffset;
+            fixedBodyHeight = $fixedBody.find('.adhesive-tbody').height() - settings.scrollbarOffset;
 
-        $thead.find('table.fht-table').addClass(settings.originalTable.attr('class'));
-        $tbody.find('table.fht-table').addClass(settings.originalTable.attr('class'));
+        $thead.find('table.adhesive-table').addClass(settings.originalTable.attr('class'));
+        $tbody.find('table.adhesive-table').addClass(settings.originalTable.attr('class'));
 
-        var $firstThChildren = $fixedBody.find('.fht-thead thead tr > *:lt(' + settings.fixedColumns + ')');
+        var $firstThChildren = $fixedBody.find('.adhesive-thead thead tr > *:lt(' + settings.fixedColumns + ')');
         var fixedColumnWidth = settings.fixedColumns * tableProps.border;
         $firstThChildren.each(function() {
           fixedColumnWidth += $(this).outerWidth(true);
@@ -198,8 +198,8 @@
         $fixedBody.css({ 'width': fixedBodyWidth });
         
         // bind vertical wheel events for fixed column
-        var maxTop = $fixedColumn.find('.fht-tbody .fht-table').height() - $fixedColumn.find('.fht-tbody').height();
-        $fixedColumn.find('.fht-tbody .fht-table').bind('wheel', function(event) {
+        var maxTop = $fixedColumn.find('.adhesive-tbody .adhesive-table').height() - $fixedColumn.find('.adhesive-tbody').height();
+        $fixedColumn.find('.adhesive-tbody .adhesive-table').bind('wheel', function(event) {
           if (event.originalEvent.deltaY === 0) { return; }
           var deltaY = -1 * event.originalEvent.deltaY ;/// (20 * 120);// TODO browser stuff
           
@@ -207,7 +207,7 @@
           top = (top > 0 ? 0 : ( top < -maxTop ? -maxTop : top) );
           
           $(this).css('marginTop', top);
-          $fixedBody.find('.fht-tbody').scrollTop(-top).scroll();
+          $fixedBody.find('.adhesive-tbody').scrollTop(-top).scroll();
           return false;
         });
 
@@ -241,17 +241,17 @@
           var $obj = $(this),
               $cell;
               
-          if( $obj.find('div.fht-cell').length ){
-            $cell = $(this).find('div.fht-cell');            
+          if( $obj.find('div.adhesive-cell').length ){
+            $cell = $(this).find('div.adhesive-cell');            
           } else {
-            $cell = $('<div class="fht-cell"></div>').appendTo($obj);            
+            $cell = $('<div class="adhesive-cell"></div>').appendTo($obj);            
           }
           $cell.css({ 'width': parseInt(cellArray[index], 10) });
 
           /* Fixed Header should extend the full width to align with the scrollbar of the body */
-          var a = !$obj.closest('.fht-tbody').length;
+          var a = !$obj.closest('.adhesive-tbody').length;
           var b = $obj.is(':last-child');
-          var c = !$obj.closest('.fht-fixed-column').length;
+          var c = !$obj.closest('.adhesive-fixed-column').length;
           if ( a && b  && c) {
             var widthDifference = ($obj.innerWidth() - $obj.width()) / 2;
             var padding = Math.max(widthDifference, settings.scrollbarOffset);
@@ -268,7 +268,7 @@
           return cachedPaddingInfo.defaultHeight !== cachedPaddingInfo.newHeight;
         }
         
-        var $obj = $('<table class="fht-table"><tr><td style="padding: 10px; font-size: 10px;">test</td></tr></table>');
+        var $obj = $('<table class="adhesive-table"><tr><td style="padding: 10px; font-size: 10px;">test</td></tr></table>');
 
         $obj.addClass(settings.originalTable.attr('class'));
         $obj.appendTo('body');
@@ -322,7 +322,7 @@
       methods.destroy.apply(this);
       return methods.init.apply(this, arguments);      
     } else {
-      $.error('Input "' +  action + '" is not valid for the fixedHeaderRewrite plugin!');      
+      $.error('Input "' +  action + '" is not valid for the adhesiveTable plugin');      
     }  
     
   };

@@ -55,73 +55,73 @@
     describe('Basic functionality', function(){
       it('is a function', function () {
         //returns a thing that duck types to a function
-        assert.isTrue(!!(_$.fn.fixedHeaderRewrite && _$.fn.fixedHeaderRewrite.constructor && _$.fn.fixedHeaderRewrite.call && _$.fn.fixedHeaderRewrite.apply));
+        assert.isTrue(!!(_$.fn.adhesiveTable && _$.fn.adhesiveTable.constructor && _$.fn.adhesiveTable.call && _$.fn.adhesiveTable.apply));
       });
       
       it('when pointed at a non-table, an error is thrown', function(){
         assert.throws(
           function(){
-            _$('#subspan').fixedHeaderRewrite();
+            _$('#subspan').adhesiveTable();
         }, Error, 'Invalid table mark-up');
       });
       
       it('throws if given invalid arguments', function(){
         assert.throws(function(){
-          _$('#testTable').fixedHeaderRewrite('wonk');
-        }, Error, 'Input "wonk" is not valid for the fixedHeaderRewrite plugin!');
+          _$('#testTable').adhesiveTable('wonk');
+        }, Error, 'Input "wonk" is not valid for the adhesiveTable plugin');
         
         assert.throws(function(){
-          _$('#testTable').fixedHeaderRewrite(NaN);
-        }, Error, 'Input "NaN" is not valid for the fixedHeaderRewrite plugin!');
+          _$('#testTable').adhesiveTable(NaN);
+        }, Error, 'Input "NaN" is not valid for the adhesiveTable plugin');
         
         assert.throws(function(){
-          _$('#testTable').fixedHeaderRewrite({});
-        }, Error, 'Input "[object Object]" is not valid for the fixedHeaderRewrite plugin!');
+          _$('#testTable').adhesiveTable({});
+        }, Error, 'Input "[object Object]" is not valid for the adhesiveTable plugin');
         
         assert.throws(function(){
-          _$('#testTable').fixedHeaderRewrite([]);
-        }, Error, 'Input "" is not valid for the fixedHeaderRewrite plugin!');
+          _$('#testTable').adhesiveTable([]);
+        }, Error, 'Input "" is not valid for the adhesiveTable plugin');
         
         assert.doesNotThrow(function(){
-          _$('#testTable').fixedHeaderRewrite(false);
+          _$('#testTable').adhesiveTable(false);
         }, Error, 'function does not throw');
         
         assert.doesNotThrow(function(){
-          _$('#testTable').fixedHeaderRewrite(true);
+          _$('#testTable').adhesiveTable(true);
         }, Error, 'function does not throw');
         
         assert.doesNotThrow(function(){
-          _$('#testTable').fixedHeaderRewrite('destroy');
+          _$('#testTable').adhesiveTable('destroy');
         }, Error, 'function does not throw');
       });
     });
     
     describe('Formatting', function(){
       it('when pointed at a table, many things are wrapped', function(){
-        _$('#testTable').fixedHeaderRewrite();
+        _$('#testTable').adhesiveTable();
         var tableWrapper = document.getElementById('mocha-fixture').children[0];
-        assert.equal(tableWrapper.getAttribute('class'), 'fht-table-wrapper', 'table wrapper should have appropriate classes appended');
+        assert.equal(tableWrapper.getAttribute('class'), 'adhesive-table-wrapper', 'table wrapper should have appropriate classes appended');
       
         var headWrapper = tableWrapper.children[0];
-        assert.equal(headWrapper.getAttribute('class'), 'fht-thead', 'table header wrapper should have appropriate classes');
+        assert.equal(headWrapper.getAttribute('class'), 'adhesive-thead', 'table header wrapper should have appropriate classes');
         assert.equal(headWrapper.children.length, 1, 'only contains a single element');
         assert.equal(headWrapper.children[0].tagName, 'TABLE', 'contains a table');
         
         
         var bodyWrapper = tableWrapper.children[1];
-        assert.equal(bodyWrapper.getAttribute('class'), 'fht-tbody', 'table body wrapper should have appropriate classes');
+        assert.equal(bodyWrapper.getAttribute('class'), 'adhesive-tbody', 'table body wrapper should have appropriate classes');
         assert.equal(bodyWrapper.children.length, 1, 'only contains a single element');
         assert.equal(bodyWrapper.children[0].tagName, 'TABLE', 'contains a table');
         
       });
       
       it('when pointed at a table, all elements in a column are the same width', function(){
-        _$('#testTable').fixedHeaderRewrite();
+        _$('#testTable').adhesiveTable();
         var numberOfRows = _$('tr').length;
-        var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
+        var numberOfColumns = _$('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th').length;
         var uniformWidth = true;
         for(var j = 1; j <= numberOfColumns; j++){        
-          var width = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(' + j +')').width();
+          var width = _$('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(' + j +')').width();
           for(var i = 1; i <= numberOfRows; i++){
             var rowWidth = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').width();
             if(rowWidth !== width){
@@ -133,12 +133,12 @@
       });
       
       it('when pointed at a table with a fixed column, all elements in a column are the same width', function(){
-        _$('#testTable').fixedHeaderRewrite(true);
+        _$('#testTable').adhesiveTable(true);
         var numberOfRows = _$('#testTable > tbody > tr').length;
-        var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
+        var numberOfColumns = _$('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th').length;
         var uniformWidth = true;
         for(var j = 1; j <= numberOfColumns; j++){        
-          var width = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(' + j +')').width();
+          var width = _$('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(' + j +')').width();
           for(var i = 1; i <= numberOfRows; i++){
             var rowWidth = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').width();
             if(rowWidth !== width){
@@ -150,13 +150,13 @@
       });
       
       it('when pointed at a table with a fixed column, all elements in a row have the same height', function(){
-        _$('#testTable').fixedHeaderRewrite('destroy');
+        _$('#testTable').adhesiveTable('destroy');
         var numberOfRows = _$('tr').length;
-        var numberOfColumns = _$('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th').length;
+        var numberOfColumns = _$('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th').length;
         var uniformHeight = true;
         
         for(var j = 1; j <= numberOfRows; j++){
-          var height = _$('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(' + j + ') > td').height();
+          var height = _$('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(' + j + ') > td').height();
           for(var i = 1; i <= numberOfColumns; i++){
             var rowHeight = _$('#testTable > tbody > tr:nth-child(' + i + ') > td:nth-child(' + j + ')').height();
             if(rowHeight !== height){
@@ -170,7 +170,7 @@
     describe('Makes tables sticky', function(){
       describe('Setup: table is not sticky before using the plugin', function(){
         before(function(){
-          _$('#testTable').fixedHeaderRewrite('destroy');//reset the cache
+          _$('#testTable').adhesiveTable('destroy');//reset the cache
         });
         
         it('header is initially visible', function(done){
@@ -200,17 +200,17 @@
       
       describe('Test: using options to access the sticky header, only provide sticky header functionality', function(){
         beforeEach(function(){
-          _$('#testTable').fixedHeaderRewrite();
+          _$('#testTable').adhesiveTable();
         });
         it('header is initially visible', function(){
-          scrollSelectorIntoView('#mocha-fixture > div > div.fht-thead', true);
-          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header is initially visible');
+          scrollSelectorIntoView('#mocha-fixture > div > div.adhesive-thead', true);
+          assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-thead'), 'header is initially visible');
         });
         
         it('header is still visible after scroll', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40)', true); 
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-thead'), 'header still visible');
             done();
           }, 10); 
         });
@@ -218,39 +218,39 @@
         it('header should be still visible', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1)', true);
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-thead'), 'header should be still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-thead'), 'header should be still visible');
             done();
           }, 10); 
         });
         
         it('does not see the sticky column', function(){
-          selectorInViewport('#mocha-fixture > div > div.fht-fixed-column');
+          selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column');
         });
       });
       
       
       describe('Test: in sticky column mode a sticky column has that functionality', function(){
         before(function(){
-          _$('#testTable').fixedHeaderRewrite('destroy');//reset the cache
+          _$('#testTable').adhesiveTable('destroy');//reset the cache
         });
         
         beforeEach(function(){
-          _$('#testTable').fixedHeaderRewrite(true);
+          _$('#testTable').adhesiveTable(true);
         });
         
         it('should see the cloned column', function(){
-          selectorInViewport('#mocha-fixture > div > div.fht-fixed-column');
+          selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column');
         });
         
         // it('which should have the same height as the regular table', function(){
-        //   selectorInViewport('#mocha-fixture > div > div.fht-fixed-column').children[1];
+        //   selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column').children[1];
         // });
         
         it('should still see the sticky column and header after scrolling right', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(10)', false); 
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(10)'), 'header still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(10)'), 'header still visible');
             done();
           }, 10); 
         });
@@ -258,8 +258,8 @@
         it('should still see the sticky column and header after scrolling back left', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(1)', false); 
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(1)'), 'header still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(1)'), 'header still visible');
             done();
           }, 10); 
         });
@@ -267,8 +267,8 @@
         it('should still see the sticky column and header to the far right corner', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(40) > td:nth-child(10)', false); 
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(40) > td'), 'sticky column still visible');
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(10)'), 'header still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(40) > td'), 'sticky column still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(10)'), 'header still visible');
             done();
           }, 10); 
         });
@@ -276,8 +276,8 @@
         it('should still see the sticky column and header after scrolling back left', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(1)', false); 
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.fht-fixed-body > div.fht-thead > table > thead > tr > th:nth-child(1)'), 'header still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(1)'), 'header still visible');
             done();
           }, 10); 
         });
@@ -287,11 +287,11 @@
     
     describe('Caching System', function(){
       beforeEach(function(){
-        _$('#testTable').fixedHeaderRewrite('destroy');
+        _$('#testTable').adhesiveTable('destroy');
       });
       
       it('Caches values that would be waste to compute again in a global variable', function(){
-        _$('#testTable').fixedHeaderRewrite();
+        _$('#testTable').adhesiveTable();
         var cache = window.fixedHeaderRewriteCache;
         assert.isTrue(!!cache);
         assert.isTrue(!!cache.getScrollbarWidth);
@@ -299,8 +299,8 @@
       });
       
       it('Calling destroy resets the cache', function(){
-        _$('#testTable').fixedHeaderRewrite();
-        _$('#testTable').fixedHeaderRewrite('destroy');
+        _$('#testTable').adhesiveTable();
+        _$('#testTable').adhesiveTable('destroy');
         var cache = window.fixedHeaderRewriteCache;
         assert.isTrue(!!cache);
         assert.isTrue(!cache.getScrollbarWidth);
