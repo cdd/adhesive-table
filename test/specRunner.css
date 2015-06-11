@@ -2,18 +2,7 @@
   width: 300px;
   height: 200px;
 }
-#testTable > tbody > tr > th{
-  width: 50px;
-  height: 50px;
-}
-/*TODO make sure to include a note in the documentation about the placement of sizing selectors*/
 #mocha-fixture {
   height: 300px;
   width: 300px;
-}
-#mocha-fixture > div > div.fht-fixed-column > div:nth-child(1) > table > thead > tr > th {
-  background: #ffffff  
-}
-#mocha-fixture > div > div.fht-fixed-column > div:nth-child(2) > table > tbody > tr > td {
-  background: #ffffff
 }
