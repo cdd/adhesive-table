@@ -23,11 +23,7 @@
 
       /* Setup table structure for fixed headers */
       setup: function () {
-        var $self       = $(this),
-            self        = this,
-            $thead      = $self.find('thead'),
-            $fixedBody;
-
+        var $self       = $(this);
         settings.originalTable = $self.clone();
         settings.includePadding = helpers._isPaddingIncludedWithWidth();
         settings.scrollbarOffset = helpers._getScrollbarWidth();
@@ -42,8 +38,8 @@
         }
 
         var $wrapper = $self.closest('.adhesive-table-wrapper');
-        
-        if (settings.fixedColumns > 0 && $wrapper.find('.adhesive-fixed-column').length === 0) {
+        var $fixedBody;
+        if (settings.fixedColumns > 0 && !$wrapper.find('.adhesive-fixed-column').length) {
           $self.wrap('<div class="adhesive-fixed-body"></div>');
           $('<div class="adhesive-fixed-column"></div>').prependTo($wrapper);
           $fixedBody = $wrapper.find('.adhesive-fixed-body');
@@ -56,29 +52,15 @@
         }
 
         var $divBody = $self.closest('.adhesive-tbody');
-
         var tableProps = helpers._getTableProps($self);
         helpers._setupClone($divBody, tableProps.tbody);
         
-        //build and copy the sticky header if necessary
-        var $divHead;
-        if (!$self.hasClass('adhesive-table-init')) {
-          $divHead = $('<div class="adhesive-thead"><table class="adhesive-table"></table></div>');
-          $divHead.prependTo(settings.fixedColumns > 0 ? $fixedBody : $wrapper);
-          $divHead.find('table.adhesive-table')
-            .addClass(settings.originalTable.attr('class'))
-            .attr('style', settings.originalTable.attr('style'));
-
-          $thead.clone().appendTo($divHead.find('table'));
-        } else {
-          $divHead = $wrapper.find('div.adhesive-thead');
-        }
+        
+        var $divHead = helpers._buildClone($self, $wrapper, $fixedBody);
         helpers._setupClone($divHead, tableProps.thead);
-
-
         $self.css({ 'margin-top': -$divHead.outerHeight(true) });
 
-        var tbodyHeight = $wrapper.height() - $thead.outerHeight(true) - tableProps.border;
+        var tbodyHeight = $wrapper.height() - $self.find('thead').outerHeight(true) - tableProps.border;
         $divBody.css({ 'height': tbodyHeight });
 
         $self.addClass('adhesive-table-init');
@@ -89,7 +71,7 @@
 
         helpers._bindScroll($divBody, tableProps);
 
-        return self;
+        return this;
       },
 
       /* Destory fixedHeaderTable and return table to original state */
@@ -109,6 +91,24 @@
     };
     
     var helpers = {
+      //build and copy the sticky header if necessary
+      _buildClone: function($self, $wrapper, $fixedBody){
+        var $thead = $self.find('thead');
+        var $divHead;
+        if (!$self.hasClass('adhesive-table-init')) {
+          $divHead = $('<div class="adhesive-thead"><table class="adhesive-table"></table></div>');
+          $divHead.prependTo(settings.fixedColumns > 0 ? $fixedBody : $wrapper);
+          $divHead.find('table.adhesive-table')
+            .addClass(settings.originalTable.attr('class'))
+            .attr('style', settings.originalTable.attr('style'));
+
+          $thead.clone().appendTo($divHead.find('table'));
+        } else {
+          $divHead = $wrapper.find('div.adhesive-thead');
+        }
+        return $divHead;
+      },
+      
       _isTable: function($obj) {
         var $self = $obj,
             hasTable = $self.is('table'),
@@ -196,8 +196,12 @@
         // set widths of fixed column & body table wrappers
         $fixedColumn.css({ 'height': 0, 'width': fixedColumnWidth });
         $fixedBody.css({ 'width': fixedBodyWidth });
-        
-        // bind vertical wheel events for fixed column
+
+        helpers._bindColumnScroll($fixedColumn, $fixedBody);
+      },
+      
+      // bind vertical wheel events for fixed column
+      _bindColumnScroll: function($fixedColumn, $fixedBody){
         var maxTop = $fixedColumn.find('.adhesive-tbody .adhesive-table').height() - $fixedColumn.find('.adhesive-tbody').height();
         $fixedColumn.find('.adhesive-tbody .adhesive-table').bind('wheel', function(event) {
           if (event.originalEvent.deltaY === 0) { return; }
@@ -210,9 +214,7 @@
           $fixedBody.find('.adhesive-tbody').scrollTop(-top).scroll();
           return false;
         });
-
       },
-
 
       /* Widths of each thead cell and tbody cell for the first rows.
        * Used in fixing widths for the fixed header. */
@@ -284,7 +286,6 @@
         return defaultHeight !== newHeight;
       },
 
-      /* return int */
       _getScrollbarWidth: function() {
         var cachedScrollWidth = window.fixedHeaderRewriteCache.getScrollbarWidth;
         if(cachedScrollWidth || cachedScrollWidth === 0){
