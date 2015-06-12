@@ -75,6 +75,13 @@ If you want a sticky column too, you simply call:
     jQuery('#tableExample').adhesiveTable(true); 
 </script>
 ```
+Finally, if for some reason you need to remove the formatting from your table, call:
+```html
+<script>
+    jQuery('#tableExample').adhesiveTable('destroy'); 
+</script>
+```
+
 Thats it.
 
 
