@@ -1,5 +1,5 @@
 (function () {  
-  describe('Fixed Header Table Rewrite', function(){
+  describe('Fixed Header Table Rewrite: Integration Tests', function(){
     
     before(function(){
       //build the test fixture
@@ -249,8 +249,8 @@
         it('should still see the sticky column and header after scrolling right', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(10)', false); 
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
             assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(10)'), 'header still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div.adhesive-tbody > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
             done();
           }, 10); 
         });
@@ -258,8 +258,8 @@
         it('should still see the sticky column and header after scrolling back left', function(done){
           scrollSelectorIntoView('#testTable > tbody > tr:nth-child(1) > td:nth-child(1)', false); 
           setTimeout(function(){
-            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
             assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-body > div.adhesive-thead > table > thead > tr > th:nth-child(1)'), 'header still visible');
+            assert.isTrue(selectorInViewport('#mocha-fixture > div > div.adhesive-fixed-column > div:nth-child(2) > table > tbody > tr:nth-child(2) > td'), 'sticky column still visible');
             done();
           }, 10); 
         });

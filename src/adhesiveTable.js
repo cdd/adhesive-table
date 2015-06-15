@@ -137,11 +137,9 @@
       },
 
       _fixWidthWithCss: function($obj, tableProps, width) {
-        $obj.each(function() {
-          var includedPadding = settings.includePadding ? $(this).width() : $(this).parent().width();
-          var computedWidth = (width || width === 0 ? width : includedPadding);
-          $(this).css({ 'width': computedWidth + tableProps.border});
-        });
+        var includedPadding = settings.includePadding ? $obj.width() : $obj.parent().width();
+        var computedWidth = (width || width === 0 ? width : includedPadding);
+        $obj.css({ 'width': computedWidth + tableProps.border});
       },
 
       _setupFixedColumn: function ($self, tableProps) {
@@ -150,33 +148,19 @@
             $fixedColumn    = $wrapper.find('.adhesive-fixed-column'),
             $thead          = $('<div class="adhesive-thead"><table class="adhesive-table"><thead><tr></tr></thead></table></div>'),
             $tbody          = $('<div class="adhesive-tbody"><table class="adhesive-table"><tbody></tbody></table></div>'),
-            fixedBodyWidth  = $wrapper.width(),
             fixedBodyHeight = $fixedBody.find('.adhesive-tbody').height() - settings.scrollbarOffset;
 
         $thead.find('table.adhesive-table').addClass(settings.originalTable.attr('class'));
         $tbody.find('table.adhesive-table').addClass(settings.originalTable.attr('class'));
 
-        var $firstThChildren = $fixedBody.find('.adhesive-thead thead tr > *:lt(' + settings.fixedColumns + ')');
-        var fixedColumnWidth = settings.fixedColumns * tableProps.border;
-        $firstThChildren.each(function() {
-          fixedColumnWidth += $(this).outerWidth(true);
-        });
-
+        var $firstThChildren = $fixedBody.find('.adhesive-thead thead tr > *:lt(1)');
+        var fixedColumnWidth = settings.fixedColumns * tableProps.border + $firstThChildren.outerWidth(true);
         // Fix cell heights
         helpers._fixHeightWithCss($firstThChildren, tableProps);
         helpers._fixWidthWithCss($firstThChildren, tableProps);
 
-        var tdWidths = [];
-        $firstThChildren.each(function() {
-          tdWidths.push($(this).width());
-        });
-
-        var firstTdChildrenSelector = 'tbody tr > *:not(:nth-child(n+' + (settings.fixedColumns + 1) + '))';
-        var $firstTdChildren = $fixedBody.find(firstTdChildrenSelector)
-          .each(function(index) {
-            helpers._fixHeightWithCss($(this), tableProps);
-            helpers._fixWidthWithCss($(this), tableProps, tdWidths[index % settings.fixedColumns] );
-          });
+        var $firstTdChildren = $fixedBody.find('tbody tr > *:not(:nth-child(n+2))');
+        helpers._fixHeightWithCss($firstTdChildren, tableProps);
 
         // clone header
         $thead.appendTo($fixedColumn).find('tr').append($firstThChildren.clone());
@@ -189,13 +173,13 @@
           if (index % settings.fixedColumns === 0) {
             $newRow = $('<tr></tr>').appendTo($tbody.find('tbody'));
           }
-
+        
           $(this).clone().appendTo($newRow);
         });
 
         // set widths of fixed column & body table wrappers
         $fixedColumn.css({ 'height': 0, 'width': fixedColumnWidth });
-        $fixedBody.css({ 'width': fixedBodyWidth });
+        $fixedBody.css({ 'width': $wrapper.width() });
 
         helpers._bindColumnScroll($fixedColumn, $fixedBody);
       },
