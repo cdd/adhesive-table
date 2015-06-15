@@ -1,9 +1,15 @@
 {
-  "name": "fixedheaderrewrite",
+  "name": "adhesive-table",
   "version": "",
+  "main": [
+    "src/adhesiveTable.js", 
+    "src/adhesiveTable.css"
+  ],
+  "ignore": [
+    ".jshintrc"
+  ],
   "dependencies": {},
   "devDependencies": {
-    "qunit": "~1.12.0",
     "jquery": "latest"
   }
 }
